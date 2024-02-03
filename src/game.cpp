@@ -1,6 +1,9 @@
 #include "game.h"
 #include <iostream>
 #include "SDL.h"
+#include <chrono>
+#include <thread>
+#include <atomic>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -19,6 +22,19 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count{0};
   bool running{true};
   bool paused{false};
+  std::atomic<bool> gameFinished{false};
+  std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
+  std::chrono::duration<double> elapsedTime;
+
+  std::thread timeThread([&]() {
+    startTime = std::chrono::high_resolution_clock::now();
+    while (!gameFinished.load()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        auto now = std::chrono::high_resolution_clock::now();
+        elapsedTime = now - startTime;
+    }
+  });
+  timeThread.detach();
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -39,7 +55,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(score, frame_count, elapsedTime);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -51,6 +67,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       SDL_Delay(target_frame_duration - frame_duration);
     }
   }
+  gameFinished.store(true);
 }
 
 void Game::PlaceFood() {

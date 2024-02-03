@@ -1,5 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <thread>
+#include <atomic>
 #include "controller.h"
 #include "game.h"
 #include "renderer.h"
