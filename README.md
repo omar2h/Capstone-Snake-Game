@@ -35,7 +35,8 @@ In this project, you can build your own C++ application or extend this Snake gam
 1. Press p during game to pause
 2. Enter your name at the start of the game
 3. Save high scores in a file
-4. Add a timer to window tile
+4. Add new type of food which increase score by 5 that has 10% chance of appearing 
+5. Add a timer to window tile
 
 ## Rubric points
 ### Loops, Functions, I/O
