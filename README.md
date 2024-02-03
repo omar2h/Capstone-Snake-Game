@@ -69,6 +69,40 @@ case SDLK_p:
   ScoreManager(const std::string& filename)
   : m_filename{filename} {}
 ```
+- Classes abstract implementation details from their interfaces.
+
+### Memory Management
+- The project makes use of references in function declarations.
+```cpp
+void ScoreManager::UpdateHighScores(const std::string& playerName, int playerScore) {
+    m_scores.emplace_back(playerName, playerScore);
+    std::sort(m_scores.begin(), m_scores.end(), [](Score const& a, Score const& b){return a.m_score > b.m_score;});
+}
+```
+- The project follows the Rule of 5 in player class
+- The project uses move semantics to move data instead of copying it, where possible.
+
+### Concurrency
+- The project uses multithreading in game.cpp
+```cpp
+std::thread timeThread([&]() {
+  startTime = std::chrono::high_resolution_clock::now();
+  while (!gameFinished.load()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      auto now = std::chrono::high_resolution_clock::now();
+      elapsedTime = now - startTime;
+  }
+});
+timeThread.detach();
+```
+```cpp
+std::atomic<bool> gameFinished{false};
+```
+
+
+
+
+
 
 
 
