@@ -6,9 +6,14 @@ class Player
 {
     public:
         Player(std::string const& name) : m_name{name} {}
+        Player(const Player &source);
+        Player &operator=(const Player &source); 
+        Player(Player &&source); 
+        Player &operator=(Player &&source); 
+
         std::string name() const;
     private:
-        const std::string m_name{};
+        std::string m_name{};
 };
 
 #endif
