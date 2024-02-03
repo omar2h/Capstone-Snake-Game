@@ -80,7 +80,22 @@ void ScoreManager::UpdateHighScores(const std::string& playerName, int playerSco
 }
 ```
 - The project follows the Rule of 5 in player class
+```cpp
+  Player(std::string const& name) : m_name{name} {}
+  Player(const Player &source);
+  Player &operator=(const Player &source); 
+  Player(Player &&source); 
+  Player &operator=(Player &&source);
+  ~Player();
+```
 - The project uses move semantics to move data instead of copying it, where possible.
+emplace_back
+```cpp
+void ScoreManager::UpdateHighScores(const std::string& playerName, int playerScore) {
+    m_scores.emplace_back(playerName, playerScore);
+    std::sort(m_scores.begin(), m_scores.end(), [](Score const& a, Score const& b){return a.m_score > b.m_score;});
+}
+```
 
 ### Concurrency
 - The project uses multithreading in game.cpp
