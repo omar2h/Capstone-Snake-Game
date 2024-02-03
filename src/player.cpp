@@ -1,13 +1,6 @@
 #include "player.h"
 
-std::string Player::name()
+std::string Player::name() const
 {
     return m_name;
-}
-
-void Player::setName(std::string name)
-{
-    if(m_name == name)
-        return;
-    m_name = name;
 }

@@ -5,11 +5,10 @@
 class Player
 {
     public:
-        Player(std::string name) : m_name{name} {}
-        std::string name();
-        void setName(std::string);
+        Player(std::string const& name) : m_name{name} {}
+        std::string name() const;
     private:
-        std::string m_name{};
+        const std::string m_name{};
 };
 
 #endif

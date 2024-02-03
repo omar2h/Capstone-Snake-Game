@@ -4,6 +4,7 @@
 #include "game.h"
 #include "renderer.h"
 #include "player.h"
+#include "scoreManager.h"
 
 int main() {
   constexpr std::size_t kFramesPerSecond{60};
@@ -21,19 +22,15 @@ int main() {
   Controller controller;
   Game game(kGridWidth, kGridHeight);
   Player player{playerName};
+  ScoreManager scoreManager{"high_scores.txt"};
 
   game.Run(controller, renderer, kMsPerFrame);
   std::cout << "Game has terminated successfully!\n";
   std::cout << "Score: " << game.GetScore() << "\n";
   std::cout << "Size: " << game.GetSize() << "\n";
 
-  std::ofstream highScoreFile("high_scores.txt", std::ios::app);
-  if(highScoreFile.is_open()) {
-    highScoreFile << player.name() << ", " << game.GetScore() << "\n";
-    highScoreFile.close();
-    std::cout << "Your score is saved!\n";
-  } else {
-    std::cout << "Unable to open file.\n";
-  }
+  scoreManager.getScoresFromFile();
+  scoreManager.saveScoresToFile(player.name(), game.GetScore());
+
   return 0;
 }
