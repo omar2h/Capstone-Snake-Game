@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 class ScoreManager
 {
@@ -11,8 +12,9 @@ class ScoreManager
         : m_filename{filename} {}
 
     void getScoresFromFile();
-    void saveScoresToFile(std::string playerName, int score) const;
-
+    void saveScoresToFile() const;
+    void UpdateHighScores(const std::string& playerName, int playerScore);
+    
     private:
         struct Score {
             std::string m_playerName{};

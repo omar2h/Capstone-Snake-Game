@@ -30,7 +30,8 @@ int main() {
   std::cout << "Size: " << game.GetSize() << "\n";
 
   scoreManager.getScoresFromFile();
-  scoreManager.saveScoresToFile(player.name(), game.GetScore());
+  scoreManager.UpdateHighScores(player.name(), game.GetScore());
+  scoreManager.saveScoresToFile();
 
   return 0;
 }

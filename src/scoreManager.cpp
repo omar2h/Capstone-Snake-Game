@@ -11,16 +11,13 @@ void ScoreManager::getScoresFromFile() {
             m_scores.emplace_back(name, score);
         }
         scoreFile.close();
-    } else {
-        std::cout << "Unable to open file.\n";
     }
 }
 
-void ScoreManager::saveScoresToFile(std::string playerName, int scoreNum) const {
+void ScoreManager::saveScoresToFile() const {
     std::ofstream scoreFile(m_filename, std::ios::trunc);
     
     if(scoreFile.is_open()) {
-        scoreFile << playerName << " " << scoreNum << "\n";
         for (const auto& score : m_scores) {
             scoreFile << score.m_playerName << " " << score.m_score << "\n";
         }
@@ -29,4 +26,9 @@ void ScoreManager::saveScoresToFile(std::string playerName, int scoreNum) const 
     } else {
         std::cout << "Unable to open file.\n";
     }
+}
+
+void ScoreManager::UpdateHighScores(const std::string& playerName, int playerScore) {
+    m_scores.emplace_back(playerName, playerScore);
+    std::sort(m_scores.begin(), m_scores.end(), [](Score const& a, Score const& b){return a.m_score > b.m_score;});
 }
