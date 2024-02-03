@@ -20,6 +20,11 @@ Player &Player::operator=(Player &&source)
     return *this;
 }
 
+Player::~Player()
+{
+
+}
+
 std::string Player::name() const
 {
     return m_name;

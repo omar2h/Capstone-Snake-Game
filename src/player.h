@@ -9,7 +9,8 @@ class Player
         Player(const Player &source);
         Player &operator=(const Player &source); 
         Player(Player &&source); 
-        Player &operator=(Player &&source); 
+        Player &operator=(Player &&source);
+        ~Player();
 
         std::string name() const;
     private:
