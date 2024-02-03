@@ -30,6 +30,49 @@ In this project, you can build your own C++ application or extend this Snake gam
 3. Compile: `cmake .. && make`
 4. Run it: `./SnakeGame`.
 
+## New Features
+
+1. Press p during game to pause
+2. Enter your name at the start of the game
+3. Save high scores in a file
+4. Add a timer to window tile
+
+## Rubric points
+### Loops, Functions, I/O
+
+functions to read and write to file in main.cpp
+```cpp
+  scoreManager.getScoresFromFile();
+  scoreManager.UpdateHighScores(player.name(), game.GetScore());
+  scoreManager.saveScoresToFile();
+```
+read user input
+```cpp
+  std::string playerName;
+  std::cout << "Enter your name: ";
+  std::getline(std::cin, playerName);
+```
+
+pause if p is pressed in controller.cpp
+```cpp
+case SDLK_p:
+  paused = !paused;
+  break;
+```
+### Object Oriented Programming
+- new classes are added: Player and ScoreManager
+- Class constructors utilize member initialization lists.
+```cpp
+  Player(std::string const& name) : m_name{name} {}
+```
+```cpp
+  ScoreManager(const std::string& filename)
+  : m_filename{filename} {}
+```
+
+
+
+
 
 ## CC Attribution-ShareAlike 4.0 International
 
