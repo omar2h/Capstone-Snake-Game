@@ -14,7 +14,7 @@ class ScoreManager
     void getScoresFromFile();
     void saveScoresToFile() const;
     void UpdateHighScores(const std::string& playerName, int playerScore);
-    
+
     private:
         struct Score {
             std::string m_playerName{};
