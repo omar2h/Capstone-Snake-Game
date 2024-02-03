@@ -9,10 +9,10 @@ class Snake {
   enum class Direction { kUp, kDown, kLeft, kRight };
 
   Snake(int grid_width, int grid_height)
-      : m_grid_width(grid_width),
-        m_grid_height(grid_height),
-        m_head_x(grid_width / 2),
-        m_head_y(grid_height / 2) {}
+      : m_grid_width{grid_width},
+        m_grid_height{grid_height},
+        m_head_x{grid_width / 2},
+        m_head_y{grid_height / 2} {}
 
   void Update();
 
