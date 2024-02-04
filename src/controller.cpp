@@ -9,7 +9,7 @@ void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
   return;
 }
 
-void Controller::HandleInput(bool &running, bool &paused, Snake &snake) const {
+void Controller::HandleInput(bool &running, std::atomic<bool> &paused, std::condition_variable &cond, Snake &snake) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
@@ -37,7 +37,8 @@ void Controller::HandleInput(bool &running, bool &paused, Snake &snake) const {
           break;
 
         case SDLK_p:
-          paused = !paused;
+          paused.store(!paused.load());
+          cond.notify_one();
           break;
       }
     }

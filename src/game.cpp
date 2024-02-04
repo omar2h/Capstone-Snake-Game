@@ -4,6 +4,8 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <condition_variable>
+#include <mutex>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -21,17 +23,20 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_duration{};
   int frame_count{0};
   bool running{true};
-  bool paused{false};
+  std::atomic<bool> paused{false};
   std::atomic<bool> gameFinished{false};
-  std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
-  std::chrono::duration<double> elapsedTime;
+  std::condition_variable cond{};
+  std::mutex mutex{};
+  std::atomic<int> elapsedTime{};
 
   std::thread timeThread([&]() {
-    startTime = std::chrono::high_resolution_clock::now();
     while (!gameFinished.load()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        auto now = std::chrono::high_resolution_clock::now();
-        elapsedTime = now - startTime;
+      {
+        std::unique_lock<std::mutex> lock{mutex};
+        cond.wait(lock, [&]{return !paused.load() || gameFinished.load();});
+      }
+      elapsedTime.store(elapsedTime.load()+1);
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   });
   timeThread.detach();
@@ -40,8 +45,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, paused, snake);
-    if (!paused) {
+    controller.HandleInput(running, paused, cond, snake);
+    if (!paused.load()) {
         Update();
         renderer.Render(snake, food, m_special_food);
     }
@@ -68,6 +73,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     }
   }
   gameFinished.store(true);
+  cond.notify_one();
 }
 
 void Game::PlaceFood() {
