@@ -101,18 +101,25 @@ void ScoreManager::UpdateHighScores(const std::string& playerName, int playerSco
 ### Concurrency
 - The project uses multithreading in game.cpp
 ```cpp
-std::thread timeThread([&]() {
-  startTime = std::chrono::high_resolution_clock::now();
-  while (!gameFinished.load()) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-      auto now = std::chrono::high_resolution_clock::now();
-      elapsedTime = now - startTime;
-  }
-});
-timeThread.detach();
+  std::thread timeThread([&]() {
+    while (!gameFinished.load()) {
+      {
+        std::unique_lock<std::mutex> lock{mutex};
+        cond.wait(lock, [&]{return !paused.load() || gameFinished.load();});
+      }
+      elapsedTime.store(elapsedTime.load()+1);
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+  });
+  timeThread.detach();
 ```
+- Mutex or lock is used
+- condition variable is used
 ```cpp
-std::atomic<bool> gameFinished{false};
+{
+  std::unique_lock<std::mutex> lock{mutex};
+  cond.wait(lock, [&]{return !paused.load() || gameFinished.load();});
+}
 ```
 
 
